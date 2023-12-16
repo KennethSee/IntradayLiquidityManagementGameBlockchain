@@ -1,7 +1,10 @@
 import json
 from web3 import Web3
 from solcx import compile_standard, install_solc
+from dotenv import load_dotenv
 install_solc('0.8.20')
+
+load_dotenv()
 
 ganache_url = 'http://127.0.0.1:7545'
 w3 = Web3(Web3.HTTPProvider(ganache_url))
@@ -15,32 +18,32 @@ account3 = '0xA137f67Fd6943f72065CC42Ced9eD786E5547339'
 with open('./contracts/CBDC.sol', 'r') as file:
     cbdc_file = file.read()
 
-# compiled_cbdc = compile_standard (
-#     {
-#         "language": "Solidity",
-#         "sources": {"./contracts/CBDC.sol": {"content": cbdc_file}
-#                     # "./node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol": {"content": open('./node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol', 'r').read()},
-#                     # "./node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol": {"content": open('./node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol', 'r').read()},
-#                     # "./node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol": {"content": open('./node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol', 'r').read()},
-#                     # "./node_modules/@openzeppelin/contracts/access/Ownable.sol": {"content": open('./node_modules/@openzeppelin/contracts/access/Ownable.sol', 'r').read()}
-#                     },
-#         "settings": {
-#             "outputSelection": {
-#                 "*": {
-#                     "*": ["abi", "metadata", "evm.bytecode", "evm.bytecode.sourceMap"]
-#                 }
-#             }
-#         },
-#     },
-#     solc_version="0.8.20",
-# )
+compiled_cbdc = compile_standard (
+    {
+        "language": "Solidity",
+        "sources": {"./contracts/CBDC.sol": {"content": cbdc_file}
+                    # "./node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol": {"content": open('./node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol', 'r').read()},
+                    # "./node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol": {"content": open('./node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol', 'r').read()},
+                    # "./node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol": {"content": open('./node_modules/@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol', 'r').read()},
+                    # "./node_modules/@openzeppelin/contracts/access/Ownable.sol": {"content": open('./node_modules/@openzeppelin/contracts/access/Ownable.sol', 'r').read()}
+                    },
+        "settings": {
+            "outputSelection": {
+                "*": {
+                    "*": ["abi", "metadata", "evm.bytecode", "evm.bytecode.sourceMap"]
+                }
+            }
+        },
+    },
+    solc_version="0.8.20",
+)
 
-# bytecode = compiled_cbdc['contracts']['./contracts/CBDC.sol']['CBDC']['evm']['bytecode']['object']
-# abi = json.loads(compiled_cbdc['contracts']['./contracts/CBDC.sol']['CBDC']['metadata'])['output']['abi']
-with open('./build/contracts/CBDC.json') as json_file:
-    contents = json.load(json_file)
-    bytecode = contents['bytecode']
-    abi = contents['abi']
+bytecode = compiled_cbdc['contracts']['./contracts/CBDC.sol']['CBDC']['evm']['bytecode']['object']
+abi = json.loads(compiled_cbdc['contracts']['./contracts/CBDC.sol']['CBDC']['metadata'])['output']['abi']
+# with open('./build/contracts/CBDC.json') as json_file:
+#     contents = json.load(json_file)
+#     bytecode = contents['bytecode']
+#     abi = contents['abi']
 
 cbdc_contract = w3.eth.contract(abi=abi, bytecode=bytecode)
 
